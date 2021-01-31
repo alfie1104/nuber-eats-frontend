@@ -5,7 +5,7 @@ import { LoggedInRouter } from "./router/logged-in-router";
 import { LoggedOutRouter } from "./router/logged-out-router";
 
 /*
-const IS_LOGGED_IN = gql`
+const IS_LOGGED_IN = gqladfasfdas`
   query isLoggedIn {
     isLoggedIn @client
   }
