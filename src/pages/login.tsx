@@ -1,7 +1,11 @@
 import { ApolloError, gql, useMutation } from "@apollo/client";
 import React from "react";
+import Helmet from "react-helmet";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
+import { Button } from "../components/button";
 import { FormError } from "../components/form-error";
+import nuberLogo from "../images/logo.svg";
 import {
   loginMutation,
   loginMutationVariables,
@@ -29,7 +33,10 @@ export const Login = () => {
     errors,
     handleSubmit,
     watch,
-  } = useForm<ILoginForm>();
+    formState,
+  } = useForm<ILoginForm>({
+    mode: "onChange",
+  });
 
   const onCompleted = (data: loginMutation) => {
     const {
@@ -81,12 +88,18 @@ export const Login = () => {
     */
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-800">
-      <div className="bg-white w-full max-w-lg py-10 rounded-lg text-center">
-        <h3 className="text-2xl text-gray-800">Log In</h3>
+    <div className="h-screen flex items-center flex-col  mt-10 lg:mt-28">
+      <Helmet>
+        <title>Login | Nuber Eats</title>
+      </Helmet>
+      <div className="w-full max-w-screen-sm flex flex-col px-5 items-center">
+        <img src={nuberLogo} className="w-52 mb-5" />
+        <h4 className="w-full font-medium text-left text-3xl mb-5">
+          Welcome back
+        </h4>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-5 mt-5 px-5"
+          className="grid gap-5 mt-5 w-full mb-5"
         >
           <input
             ref={register({ required: "Email is required" })}
@@ -94,7 +107,7 @@ export const Login = () => {
             required
             type="email"
             name="email"
-            className=" bg-gray-100 shadow-inner   border-2 focus:border-opacity-60 focus:border-green-600 focus:outline-none mb-3 py-3 px-5 rounded-lg"
+            className="input"
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email.message} />
@@ -105,7 +118,7 @@ export const Login = () => {
             required
             type="password"
             name="password"
-            className=" bg-gray-100 shadow-inner focus:outline-none border-2 focus:border-opacity-60 focus:border-green-600  py-3 px-5 rounded-lg"
+            className="input"
           />
           {errors.password?.message && (
             <FormError errorMessage={errors.password.message} />
@@ -113,13 +126,21 @@ export const Login = () => {
           {errors.password?.type === "minLength" && (
             <FormError errorMessage={"Password must be more than 10 chars."} />
           )}
-          <button className="py-3 px-5 bg-gray-800 text-white mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90">
-            {loading ? "Loading..." : "Log in"}
-          </button>
+          <Button
+            canClick={formState.isValid}
+            loading={loading}
+            actionText="Log in"
+          />
           {loginMutationResult?.login.error && (
             <FormError errorMessage={loginMutationResult.login.error} />
           )}
         </form>
+        <div>
+          New to Nuber?{" "}
+          <Link to="/create-account" className="text-lime-600 hover:underline">
+            Create an Account
+          </Link>
+        </div>
       </div>
     </div>
   );
