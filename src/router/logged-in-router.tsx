@@ -1,21 +1,27 @@
-import { gql, useQuery } from "@apollo/client";
 import React from "react";
-import { isLoggedInVar } from "../apollo";
-import { meQuery } from "../__generated__/meQuery";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
+import { Header } from "../components/header";
+import { useMe } from "../hooks/useMe";
+import { NotFound } from "../pages/404";
+import { Restaurant } from "../pages/client/restaurants";
+import { ConfirmEmail } from "../pages/user/confirm-email";
 
-const ME_QUERY = gql`
-  query meQuery {
-    me {
-      id
-      email
-      role
-      verified
-    }
-  }
-`;
+const ClientRoutes = [
+  <Route path="/" exact key="restaurant">
+    <Restaurant />
+  </Route>,
+  <Route path="/confirm" exact key="confirm">
+    <ConfirmEmail />
+  </Route>,
+];
 
 export const LoggedInRouter = () => {
-  const { data, loading, error } = useQuery<meQuery>(ME_QUERY);
+  const { data, loading, error } = useMe();
 
   if (!data || loading || error) {
     return (
@@ -25,10 +31,17 @@ export const LoggedInRouter = () => {
     );
   }
 
+  //Header에서 Link컴포넌트를 사용하기위해 Header를 Router안에 위치시킴
   return (
-    <div>
-      <h1>{data.me.role}</h1>
-      <button onClick={() => isLoggedInVar(false)}>Log out</button>
-    </div>
+    <Router>
+      <Header />
+      <Switch>
+        {data.me.role === "Client" && ClientRoutes}
+        {data.me.role !== "Client" && ClientRoutes}
+        <Route>
+          <NotFound />
+        </Route>
+      </Switch>
+    </Router>
   );
 };
