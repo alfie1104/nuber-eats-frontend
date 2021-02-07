@@ -10,6 +10,7 @@ import { useMe } from "../hooks/useMe";
 import { NotFound } from "../pages/404";
 import { Restaurant } from "../pages/client/restaurants";
 import { ConfirmEmail } from "../pages/user/confirm-email";
+import { EditProfile } from "../pages/user/edit-profile";
 
 const ClientRoutes = [
   <Route path="/" exact key="restaurant">
@@ -17,6 +18,9 @@ const ClientRoutes = [
   </Route>,
   <Route path="/confirm" exact key="confirm">
     <ConfirmEmail />
+  </Route>,
+  <Route path="/edit-profile" exact key="edit-profile">
+    <EditProfile />
   </Route>,
 ];
 
