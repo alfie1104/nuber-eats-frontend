@@ -17,18 +17,23 @@ const VERIFY_EMAIL_MUTATION = gql`
 `;
 
 export const ConfirmEmail = () => {
-  const { data: userData } = useMe();
+  const { data: userData, refetch } = useMe();
 
   const client = useApolloClient();
   const history = useHistory();
 
-  const onCompleted = (data: verifyEmail) => {
+  const onCompleted = async (data: verifyEmail) => {
     const {
       verifyEmail: { ok },
     } = data;
 
     if (ok && userData?.me.id) {
+      //await refetch();
       /*
+        [Fragment]
+        Fragment를 사용하지 않고 Refetch를 사용하면 Backend에서 데이터를 새로 가져와서 Cache를 업데이트함
+        따라서 Fragment를 사용하는게 더 속도가 빠름
+
         write data to cache directly through 'writeFragment'
         fragment는 type의 일종임
         id를 가지고 cache에 있는 fragment를 찾을 수 있음
@@ -49,7 +54,6 @@ export const ConfirmEmail = () => {
           verified: true,
         },
       });
-
       history.push("/");
     }
   };
