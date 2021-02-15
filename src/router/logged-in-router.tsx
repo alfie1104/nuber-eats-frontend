@@ -8,19 +8,23 @@ import {
 import { Header } from "../components/header";
 import { useMe } from "../hooks/useMe";
 import { NotFound } from "../pages/404";
-import { Restaurant } from "../pages/client/restaurants";
+import { Restaurants } from "../pages/client/restaurants";
+import { Search } from "../pages/client/search";
 import { ConfirmEmail } from "../pages/user/confirm-email";
 import { EditProfile } from "../pages/user/edit-profile";
 
 const ClientRoutes = [
   <Route path="/" exact key="restaurant">
-    <Restaurant />
+    <Restaurants />
   </Route>,
   <Route path="/confirm" exact key="confirm">
     <ConfirmEmail />
   </Route>,
   <Route path="/edit-profile" exact key="edit-profile">
     <EditProfile />
+  </Route>,
+  <Route path="/search" exact key="search">
+    <Search />
   </Route>,
 ];
 
