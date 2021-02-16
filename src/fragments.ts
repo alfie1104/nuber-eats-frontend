@@ -20,3 +20,13 @@ export const RESTAURANT_FRAGMENT = gql`
 
   구문이 끝나는 부분에서 ${RESTAURANT_FRAGMENT}로 import시킴
 */
+
+export const CATEGORY_FRAGMENT = gql`
+  fragment CategoryParts on Category {
+    id
+    name
+    coverImg
+    slug
+    restaurantCount
+  }
+`;

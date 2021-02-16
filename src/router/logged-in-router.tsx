@@ -1,13 +1,9 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Header } from "../components/header";
 import { useMe } from "../hooks/useMe";
 import { NotFound } from "../pages/404";
+import { Category } from "../pages/client/category";
 import { Restaurants } from "../pages/client/restaurants";
 import { Search } from "../pages/client/search";
 import { ConfirmEmail } from "../pages/user/confirm-email";
@@ -25,6 +21,9 @@ const ClientRoutes = [
   </Route>,
   <Route path="/search" exact key="search">
     <Search />
+  </Route>,
+  <Route path="/category/:slug" exact key="category">
+    <Category />
   </Route>,
 ];
 
