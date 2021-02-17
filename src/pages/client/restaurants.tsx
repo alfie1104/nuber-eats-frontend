@@ -86,10 +86,7 @@ export const Restaurants: React.FC = () => {
           <div className="flex justify-around max-w-xs mx-auto">
             {data?.allCategories.categories?.map((category) => (
               <Link to={`/category/${category.slug}`} key={category.id}>
-                <div
-                  className="flex flex-col group items-center cursor-pointer"
-                  key={category.id}
-                >
+                <div className="flex flex-col group items-center cursor-pointer">
                   <div
                     className="w-16 h-16 rounded-full bg-cover hover:hg-gray-200 group-hover:bg-gray-100 bg-red-500"
                     style={{ backgroundImage: `url(${category.coverImg})` }}
