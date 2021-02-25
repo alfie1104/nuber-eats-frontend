@@ -84,11 +84,12 @@ describe("<Login />", () => {
         login: {
           ok: true,
           token: "XXX",
-          error: null,
+          error: "mutation-error",
         },
       },
     });
     mockedClient.setRequestHandler(LOGIN_MUTATION, mockedMutationResponse);
+    jest.spyOn(Storage.prototype, "setItem");
 
     await waitFor(() => {
       userEvent.type(email, formData.email);
@@ -102,5 +103,8 @@ describe("<Login />", () => {
         password: formData.password,
       },
     });
+    const errorMessage = getByRole("alert");
+    expect(errorMessage).toHaveTextContent("mutation-error");
+    expect(localStorage.setItem).toHaveBeenCalledWith("token", "XXX");
   });
 });
