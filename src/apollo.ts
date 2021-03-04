@@ -11,7 +11,7 @@ import { LOCALSTORAGE_TOKEN } from "./constants";
 const token = localStorage.getItem(LOCALSTORAGE_TOKEN);
 
 export const isLoggedInVar = makeVar(Boolean(token));
-export const authToken = makeVar(token);
+export const authTokenVar = makeVar(token);
 
 /*
   local state를 사용하기 위해 typePolicies옵션 정의.
@@ -30,7 +30,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      "x-jwt": token || "",
+      "x-jwt": authTokenVar() || "",
     },
   };
 });
@@ -52,7 +52,7 @@ export const client = new ApolloClient({
           },
           token: {
             read() {
-              return authToken();
+              return authTokenVar();
             },
           },
         },

@@ -27,18 +27,7 @@ describe("Log In", () => {
   });
 
   it("can fill out the form and login", () => {
-    user.visit("/");
-    //.get('[placeholder="Email"]')
-    //get, type등 mocha의 함수들은 chainable이지만, @testing-library의 find instruction은 chainable이 아니므로 앞에 cy를 붙여줘야함.
-    user.findByPlaceholderText(/email/i).type("1234@test.com"); //@testing-library/cypress가 있기 때문에 get('....')대신 findByPlacehoderText등을 사용가능
-    user.findByPlaceholderText(/password/i).type("1234123412");
-    //.get(".text-lg")
-    user
-      .findByRole("button")
-      .should("not.have.class", "pointer-events-none")
-      .click();
-    user.window().its("localStorage.token").should("be.a", "string");
-
-    //to do (can log in)
+    // @ts-ignore
+    user.login("1234@test.com", "1234123412");
   });
 });

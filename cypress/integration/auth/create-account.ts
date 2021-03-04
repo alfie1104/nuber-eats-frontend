@@ -41,10 +41,8 @@ describe("Create Account", () => {
     user.findByPlaceholderText(/password/i).type("1234123412");
     user.findByRole("button").click();
     user.wait(1000);
-    user.title().should("eq", "Login | Nuber Eats");
-    user.findByPlaceholderText(/email/i).type("real2@test.com");
-    user.findByPlaceholderText(/password/i).type("1234123412");
-    user.findByRole("button").click();
-    user.window().its("localStorage.token").should("be.a", "string");
+
+    // @ts-ignore
+    user.login("real2@test.com", "1234123412");
   });
 });
