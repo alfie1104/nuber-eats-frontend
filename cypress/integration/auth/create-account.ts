@@ -24,13 +24,7 @@ describe("Create Account", () => {
         //현재 받은 요청이 createAccountMutation이면 요청을 가로채서 결과를 바꿈(마치 성공한 것 처럼)
         req.reply((res) => {
           res.send({
-            data: {
-              createAccount: {
-                ok: true,
-                error: null,
-                __typename: "CreateAccountOutput",
-              },
-            },
+            fixture: "auth/create-account.json",
           });
         });
       }
