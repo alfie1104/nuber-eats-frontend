@@ -1,19 +1,22 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router";
 import { Button } from "../../components/button";
 import { FormError } from "../../components/form-error";
 import {
   createRestaurant,
   createRestaurantVariables,
 } from "../../__generated__/createRestaurant";
+import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
     createRestaurant(input: $input) {
       ok
       error
+      restaurantId
     }
   }
 `;
@@ -26,13 +29,49 @@ interface IFormProps {
 }
 
 export const AddRestaurant = () => {
+  const client = useApolloClient();
+  const history = useHistory();
+
+  const [imageUrl, setImageUrl] = useState("");
+
   const onCompleted = (data: createRestaurant) => {
     const {
-      createRestaurant: { ok, error },
+      createRestaurant: { ok, error, restaurantId },
     } = data;
 
     if (ok) {
       setUploading(false);
+      const { name, categoryName, address, file } = getValues();
+
+      const queryResult = client.readQuery({ query: MY_RESTAURANTS_QUERY }); //cache의 현재 state를 읽어들임
+
+      //cache에 있는 query결과를 대체하기 위해서 기존과 동일한 형식으로 data를 입력해야함
+      client.writeQuery({
+        query: MY_RESTAURANTS_QUERY,
+        data: {
+          myRestaurants: {
+            ...queryResult.myRestaurants,
+            restaurants: [
+              {
+                address,
+                category: {
+                  name: categoryName,
+                  __typename: "Category",
+                  __proto__: Object,
+                },
+                coverImg: imageUrl,
+                id: restaurantId,
+                isPromoted: false,
+                name,
+                __typename: "Restaurant",
+              },
+              ...queryResult.myRestaurants.restaurants,
+            ],
+          },
+        },
+      });
+
+      history.push("/");
     }
   };
 
@@ -71,6 +110,7 @@ export const AddRestaurant = () => {
         })
       ).json();
 
+      setImageUrl(coverImg);
       createRestaurantMutation({
         variables: {
           input: {
