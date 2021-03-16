@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
@@ -9,7 +10,7 @@ import {
   myRestaurantVariables,
 } from "../../__generated__/myRestaurant";
 
-const MY_RESTAURANT_QUERY = gql`
+export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
     myRestaurant(input: $input) {
       ok
@@ -46,6 +47,11 @@ export const MyRestaurant = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>
+          {data?.myRestaurant.restaurant?.name || "Loading..."} | Nuber Eats
+        </title>
+      </Helmet>
       <div
         className="  bg-gray-700  py-28 bg-center bg-cover"
         style={{
@@ -56,7 +62,10 @@ export const MyRestaurant = () => {
         <h2 className="text-4xl font-medium mb-10">
           {data?.myRestaurant.restaurant?.name || "Loading..."}
         </h2>
-        <Link to={``} className=" mr-8 text-white bg-gray-800 py-3 px-10">
+        <Link
+          to={`/restaurant/${id}/add-dish`}
+          className=" mr-8 text-white bg-gray-800 py-3 px-10"
+        >
           Add Dish &rarr;
         </Link>
         <Link to={``} className=" text-white bg-lime-700 py-3 px-10">

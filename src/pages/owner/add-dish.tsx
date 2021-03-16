@@ -3,12 +3,13 @@ import gql from "graphql-tag";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { Button } from "../../components/button";
 import {
   createDish,
   createDishVariables,
 } from "../../__generated__/createDish";
+import { MY_RESTAURANT_QUERY } from "./my-restaurant";
 
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {
@@ -25,28 +26,47 @@ interface IParams {
 
 interface IForm {
   name: string;
-  price: number;
+  price: string;
   description: string;
 }
 
 export const AddDish = () => {
   const { restaurantId } = useParams<IParams>();
+  const history = useHistory();
   const [createDishMutation, { loading }] = useMutation<
     createDish,
     createDishVariables
   >(CREATE_DISH_MUTATION, {
-    variables: {
-      input: {
-        restaurantId: +restaurantId,
+    refetchQueries: [
+      {
+        query: MY_RESTAURANT_QUERY,
+        variables: {
+          input: {
+            id: +restaurantId,
+          },
+        },
       },
-    },
+    ],
   });
 
-  const { register, handleSubmit, formState } = useForm<IForm>({
+  const { register, handleSubmit, formState, getValues } = useForm<IForm>({
     mode: "onChange",
   });
 
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    const { name, price, description } = getValues();
+    createDishMutation({
+      variables: {
+        input: {
+          name,
+          price: +price,
+          description,
+          restaurantId: +restaurantId,
+        },
+      },
+    });
+    history.goBack();
+  };
 
   return (
     <div className="container flex flex-col items-center mt-52">

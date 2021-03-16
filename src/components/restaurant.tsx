@@ -15,7 +15,7 @@ export const Restaurant: React.FC<IRestaurantProps> = ({
   id,
 }) => {
   return (
-    <Link to={`/restaurants/${id}`}>
+    <Link to={`/restaurant/${id}`}>
       <div className="flex flex-col">
         <div
           className="py-32 bg-center mb-3"
