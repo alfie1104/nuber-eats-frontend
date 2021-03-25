@@ -135,6 +135,22 @@ export const Restaurant = () => {
     }
   };
 
+  const triggerCancelOrder = () => {
+    setOrderStarted(false);
+    setOrderItems([]);
+  };
+
+  const triggerConfirmOrder = () => {
+    if (orderItems.length === 0) {
+      alert("Can't place empty order");
+      return;
+    }
+
+    const ok = window.confirm("You are about to place an order");
+    if (ok) {
+      console.log("should trigger mutation");
+    }
+  };
   console.log(orderItems);
 
   return (
@@ -156,9 +172,25 @@ export const Restaurant = () => {
         </div>
       </div>
       <div className="container pb-32 flex flex-col items-end mt-20">
-        <button onClick={triggerStartOrder} className="btn px-10">
-          {orderStarted ? "Ordering" : "Start Order"}
-        </button>
+        {!orderStarted && (
+          <button onClick={triggerStartOrder} className="btn px-10">
+            Start Order
+          </button>
+        )}
+        {orderStarted && (
+          <div className="flex items-center">
+            <button onClick={triggerConfirmOrder} className="btn px-10 mr-3">
+              Confirm Order
+            </button>
+            <button
+              onClick={triggerCancelOrder}
+              className="btn px-10 bg-black hover:bg-black"
+            >
+              Cancel Order
+            </button>
+          </div>
+        )}
+
         <div className="w-full grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
           {data?.restaurant.restaurant?.menu.map((dish, index) => (
             <Dish
