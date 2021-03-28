@@ -165,6 +165,10 @@ export const Restaurant = () => {
   });
 
   const triggerConfirmOrder = () => {
+    if (placingOrder) {
+      return;
+    }
+
     if (orderItems.length === 0) {
       alert("Can't place empty order");
       return;
@@ -182,7 +186,6 @@ export const Restaurant = () => {
       });
     }
   };
-  console.log(orderItems);
 
   return (
     <div>
