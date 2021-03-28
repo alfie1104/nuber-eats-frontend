@@ -1,9 +1,13 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { Dish } from "../../components/dish";
 import { DishOption } from "../../components/dish-option";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
+import {
+  createOrder,
+  createOrderVariables,
+} from "../../__generated__/createOrder";
 import { CreateOrderItemInput } from "../../__generated__/globalTypes";
 import {
   restaurant,
@@ -32,6 +36,7 @@ const CREATE_ORDER_MUTATION = gql`
     createOrder(input: $input) {
       ok
       error
+      orderId
     }
   }
 `;
@@ -140,6 +145,25 @@ export const Restaurant = () => {
     setOrderItems([]);
   };
 
+  const history = useHistory();
+
+  const onCompleted = (data: createOrder) => {
+    const {
+      createOrder: { ok, orderId },
+    } = data;
+    if (data.createOrder.ok) {
+      alert("order created");
+      history.push(`/orders/${orderId}`);
+    }
+  };
+
+  const [createOrderMutation, { loading: placingOrder }] = useMutation<
+    createOrder,
+    createOrderVariables
+  >(CREATE_ORDER_MUTATION, {
+    onCompleted,
+  });
+
   const triggerConfirmOrder = () => {
     if (orderItems.length === 0) {
       alert("Can't place empty order");
@@ -148,7 +172,14 @@ export const Restaurant = () => {
 
     const ok = window.confirm("You are about to place an order");
     if (ok) {
-      console.log("should trigger mutation");
+      createOrderMutation({
+        variables: {
+          input: {
+            restaurantId: +params.id,
+            items: orderItems,
+          },
+        },
+      });
     }
   };
   console.log(orderItems);
@@ -190,7 +221,6 @@ export const Restaurant = () => {
             </button>
           </div>
         )}
-
         <div className="w-full grid mt-16 md:grid-cols-3 gap-x-5 gap-y-10">
           {data?.restaurant.restaurant?.menu.map((dish, index) => (
             <Dish
