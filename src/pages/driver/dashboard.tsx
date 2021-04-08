@@ -1,5 +1,19 @@
 import React, { useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
+import gql from "graphql-tag";
+import { FULL_ORDER_FRAGMENT } from "../../fragments";
+import { useSubscription } from "@apollo/client";
+import { cookedOrders } from "../../__generated__/cookedOrders";
+import { Link } from "react-router-dom";
+
+const COOCKED_ORDERS_SUBSCRIPTION = gql`
+  subscription cookedOrders {
+    cookedOrders {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAGMENT}
+`;
 
 interface ICoords {
   lat: number;
@@ -56,7 +70,7 @@ export const Dashboard = () => {
     setMaps(maps);
   };
 
-  const onGetRouteClick = () => {
+  const makeRoute = () => {
     if (map) {
       const directionsService = new google.maps.DirectionsService();
       const directionsRenderer = new google.maps.DirectionsRenderer({
@@ -91,6 +105,16 @@ export const Dashboard = () => {
     }
   };
 
+  const { data: cookedOrdersData } = useSubscription<cookedOrders>(
+    COOCKED_ORDERS_SUBSCRIPTION
+  );
+
+  useEffect(() => {
+    if (cookedOrdersData?.cookedOrders.id) {
+      makeRoute();
+    }
+  }, [cookedOrdersData]);
+
   return (
     <div>
       <div
@@ -108,7 +132,28 @@ export const Dashboard = () => {
           <Driver lat={driverCoords.lat} lng={driverCoords.lng} />
         </GoogleMapReact>
       </div>
-      <button onClick={onGetRouteClick}>Get route</button>
+
+      <div className="max-w-screen-sm mx-auto bg-white relative -top-10 shadow-lg py-8 px-5">
+        {cookedOrdersData?.cookedOrders ? (
+          <>
+            <h1 className="text-center text-3xl font-medium">
+              New Coocked Order
+            </h1>
+            <h4 className="text-center my-3 text-2xl font-medium">
+              Pick it up soon! @{" "}
+              {cookedOrdersData.cookedOrders.restaurant?.name}
+            </h4>
+            <Link
+              to={`/orders/${cookedOrdersData.cookedOrders.id}`}
+              className="btn w-full block text-center mt-5"
+            >
+              Accept Challenge &rarr;
+            </Link>
+          </>
+        ) : (
+          <h1 className="text-center text-3xl font-medium">No Orders yet...</h1>
+        )}
+      </div>
     </div>
   );
 };
