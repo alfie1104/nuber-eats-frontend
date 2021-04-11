@@ -162,7 +162,7 @@ export const Dashboard = () => {
           defaultZoom={16}
           draggable={false}
           defaultCenter={{ lat: 37.58, lng: 126.95 }}
-          bootstrapURLKeys={{ key: "" }}
+          bootstrapURLKeys={{ key: "AIzaSyCKEZSFLr-NCrx_TkE-_uMVjNjws5gQ2Y0" }}
         >
           <Driver lat={driverCoords.lat} lng={driverCoords.lng} />
         </GoogleMapReact>
