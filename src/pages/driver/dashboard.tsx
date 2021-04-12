@@ -6,6 +6,9 @@ import { useMutation, useSubscription } from "@apollo/client";
 import { cookedOrders } from "../../__generated__/cookedOrders";
 import { Link, useHistory } from "react-router-dom";
 import { takeOrder, takeOrderVariables } from "../../__generated__/takeOrder";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const COOCKED_ORDERS_SUBSCRIPTION = gql`
   subscription cookedOrders {
@@ -162,7 +165,7 @@ export const Dashboard = () => {
           defaultZoom={16}
           draggable={false}
           defaultCenter={{ lat: 37.58, lng: 126.95 }}
-          bootstrapURLKeys={{ key: "AIzaSyCKEZSFLr-NCrx_TkE-_uMVjNjws5gQ2Y0" }}
+          bootstrapURLKeys={{ key: `${process.env.REACT_APP_GOOGLE_MAP_KEY}` }}
         >
           <Driver lat={driverCoords.lat} lng={driverCoords.lng} />
         </GoogleMapReact>
